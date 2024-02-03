@@ -34,7 +34,6 @@ Future<void> initDatabase() async {
       AdminSchema,
     ],
     directory: './tmp/',
-    // inspector: false,
     name: 'databases',
   );
 
