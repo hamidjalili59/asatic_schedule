@@ -27,23 +27,18 @@ const AdminSchema = CollectionSchema(
       name: r'deviceList',
       type: IsarType.longList,
     ),
-    r'message': PropertySchema(
-      id: 2,
-      name: r'message',
-      type: IsarType.string,
-    ),
     r'name': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'name',
       type: IsarType.string,
     ),
     r'password': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'password',
       type: IsarType.string,
     ),
     r'phone': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'phone',
       type: IsarType.int,
     )
@@ -81,12 +76,6 @@ int _adminEstimateSize(
     }
   }
   {
-    final value = object.message;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
     final value = object.name;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -109,10 +98,9 @@ void _adminSerialize(
 ) {
   writer.writeString(offsets[0], object.address);
   writer.writeLongList(offsets[1], object.deviceList);
-  writer.writeString(offsets[2], object.message);
-  writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.password);
-  writer.writeInt(offsets[5], object.phone);
+  writer.writeString(offsets[2], object.name);
+  writer.writeString(offsets[3], object.password);
+  writer.writeInt(offsets[4], object.phone);
 }
 
 Admin _adminDeserialize(
@@ -125,10 +113,9 @@ Admin _adminDeserialize(
     address: reader.readStringOrNull(offsets[0]),
     deviceList: reader.readLongList(offsets[1]),
     id: id,
-    message: reader.readStringOrNull(offsets[2]),
-    name: reader.readStringOrNull(offsets[3]),
-    password: reader.readStringOrNull(offsets[4]),
-    phone: reader.readIntOrNull(offsets[5]),
+    name: reader.readStringOrNull(offsets[2]),
+    password: reader.readStringOrNull(offsets[3]),
+    phone: reader.readIntOrNull(offsets[4]),
   );
   return object;
 }
@@ -149,8 +136,6 @@ P _adminDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
-    case 5:
       return (reader.readIntOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -613,152 +598,6 @@ extension AdminQueryFilter on QueryBuilder<Admin, Admin, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'message',
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'message',
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'message',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'message',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'message',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'message',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'message',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'message',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'message',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'message',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'message',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> messageIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'message',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<Admin, Admin, QAfterFilterCondition> nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -1135,18 +974,6 @@ extension AdminQuerySortBy on QueryBuilder<Admin, Admin, QSortBy> {
     });
   }
 
-  QueryBuilder<Admin, Admin, QAfterSortBy> sortByMessage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'message', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterSortBy> sortByMessageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'message', Sort.desc);
-    });
-  }
-
   QueryBuilder<Admin, Admin, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1209,18 +1036,6 @@ extension AdminQuerySortThenBy on QueryBuilder<Admin, Admin, QSortThenBy> {
     });
   }
 
-  QueryBuilder<Admin, Admin, QAfterSortBy> thenByMessage() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'message', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterSortBy> thenByMessageDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'message', Sort.desc);
-    });
-  }
-
   QueryBuilder<Admin, Admin, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -1272,13 +1087,6 @@ extension AdminQueryWhereDistinct on QueryBuilder<Admin, Admin, QDistinct> {
     });
   }
 
-  QueryBuilder<Admin, Admin, QDistinct> distinctByMessage(
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'message', caseSensitive: caseSensitive);
-    });
-  }
-
   QueryBuilder<Admin, Admin, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -1316,12 +1124,6 @@ extension AdminQueryProperty on QueryBuilder<Admin, Admin, QQueryProperty> {
   QueryBuilder<Admin, List<int>?, QQueryOperations> deviceListProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'deviceList');
-    });
-  }
-
-  QueryBuilder<Admin, String?, QQueryOperations> messageProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'message');
     });
   }
 

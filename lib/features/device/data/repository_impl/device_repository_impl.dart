@@ -11,18 +11,17 @@ import 'package:isar/isar.dart';
 ///
 class DeviceRepositoryImpl extends BaseRepository<Device> {
   /// instance of ISAR Database
-  late Isar db = locator.get<Isar>();
   @override
   FutureOr<ReturnSaveFuncInfo<Device>> create(Device object) async {
     try {
       final newDevice = Device(
         name: object.name ?? 'UNNAMED',
         message: object.message ?? 'UNKNOWN',
-        queueList: object.queueList ?? [],
+        counterList: object.counterList,
       );
 
-      await db.writeTxn(() async {
-        await db.devices.put(newDevice); // insert & update
+      await locator.get<Isar>().writeTxn(() async {
+        await locator.get<Isar>().devices.put(newDevice); // insert & update
       });
       final result = ReturnSaveFuncInfo<Device>()..setValue(newDevice);
       return result;
@@ -34,7 +33,7 @@ class DeviceRepositoryImpl extends BaseRepository<Device> {
 
   @override
   FutureOr<ReturnSaveFuncInfo<bool>> deleteById(int id) async {
-    final deleteResult = await db.devices.delete(id);
+    final deleteResult = await locator.get<Isar>().devices.delete(id);
 
     if (deleteResult) {
       final result = ReturnSaveFuncInfo<bool>()..setValue(true);
@@ -47,8 +46,12 @@ class DeviceRepositoryImpl extends BaseRepository<Device> {
 
   @override
   FutureOr<ReturnSaveFuncInfo<List<Device?>>> findAll() async {
-    final deviceList = await db.devices
-        .getAll(List.generate(await db.devices.count(), (index) => index + 1));
+    final deviceList = await locator.get<Isar>().devices.getAll(
+          List.generate(
+            await locator.get<Isar>().devices.count(),
+            (index) => index + 1,
+          ),
+        );
     if (deviceList.isNotEmpty) {
       final result = ReturnSaveFuncInfo<List<Device?>>()..setValue(deviceList);
       return result;
@@ -60,7 +63,7 @@ class DeviceRepositoryImpl extends BaseRepository<Device> {
 
   @override
   FutureOr<ReturnSaveFuncInfo<Device>> findById(int id) async {
-    final device = await db.devices.get(id);
+    final device = await locator.get<Isar>().devices.get(id);
     if (device == null) {
       final result = ReturnSaveFuncInfo<Device>()..setError();
       return result;
@@ -72,7 +75,9 @@ class DeviceRepositoryImpl extends BaseRepository<Device> {
 
   @override
   FutureOr<ReturnSaveFuncInfo<Device>> updateById(Device object) async {
-    final changedDevice = await db.writeTxn(() => db.devices.put(object));
+    final changedDevice = await locator
+        .get<Isar>()
+        .writeTxn(() => locator.get<Isar>().devices.put(object));
     if (changedDevice == object.id) {
       final result = ReturnSaveFuncInfo<Device>()..setValue(object);
       return result;

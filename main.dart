@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:asatic/features/admin/domain/models/admin.dart';
+import 'package:asatic/features/counter/domain/models/counter.dart';
 import 'package:asatic/features/device/domain/models/device.dart';
 import 'package:asatic/features/locator.dart';
 import 'package:asatic/features/queue/domain/models/queue.dart';
@@ -32,8 +33,10 @@ Future<void> initDatabase() async {
       DeviceSchema,
       QueueModelSchema,
       AdminSchema,
+      CounterSchema,
     ],
     directory: './tmp/',
+    inspector: false,
     name: 'databases',
   );
 

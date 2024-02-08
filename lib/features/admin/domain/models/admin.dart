@@ -14,7 +14,6 @@ class Admin {
   Admin({
     required this.name,
     required this.address,
-    required this.message,
     required this.password,
     required this.phone,
     this.id,
@@ -26,11 +25,10 @@ class Admin {
     return Admin(
       id: json['id'] as Id?,
       name: json['name'] as String?,
-      message: json['message'] as String?,
       password: json['password'] as String?,
       phone: json['phone'] as short?,
       address: json['address'] as String?,
-      deviceList: json['deviceList'] as List<Id>?,
+      deviceList: json['deviceList'] as List<int>?,
     );
   }
 
@@ -55,11 +53,6 @@ class Admin {
   String? password;
 
   ///
-  /// this message printed by hardware
-  ///
-  String? message;
-
-  ///
   /// address is a Text for store shop address
   ///
   String? address;
@@ -67,7 +60,7 @@ class Admin {
   ///
   ///
   ///
-  List<Id>? deviceList; // cannot be nullable
+  List<int>? deviceList; // cannot be nullable
 
   ///
   Map<String, dynamic> toJson() {
@@ -77,7 +70,6 @@ class Admin {
       'address': address,
       'phone': phone,
       'password': password,
-      'message': message,
       'deviceList': deviceList,
     };
   }

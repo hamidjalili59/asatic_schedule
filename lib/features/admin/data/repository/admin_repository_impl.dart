@@ -18,9 +18,9 @@ class AdminRepositoryImpl extends BaseRepository<Admin> {
       final newAdmin = Admin(
         name: object.name ?? 'UNNAMED',
         address: object.address ?? 'UNTAGGED',
-        message: object.message ?? 'UNKNOWN',
         password: object.password ?? 'UNKNOWN',
         phone: object.phone ?? 0,
+        deviceList: object.deviceList,
       );
 
       await db.writeTxn(() async {

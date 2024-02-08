@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:asatic/features/device/domain/models/device.dart';
-import 'package:asatic/features/device/domain/use_case/change_device_info_use_case.dart';
-import 'package:asatic/features/device/domain/use_case/create_device_use_case.dart';
-import 'package:asatic/features/device/domain/use_case/get_all_devices_use_case.dart';
-import 'package:asatic/features/device/domain/use_case/get_device_by_id_use_case.dart';
 import 'package:asatic/features/locator.dart';
+import 'package:asatic/features/queue/domain/models/queue.dart';
+import 'package:asatic/features/queue/domain/use_case/change_queue_info_use_case.dart';
+import 'package:asatic/features/queue/domain/use_case/create_queue_use_case.dart';
+import 'package:asatic/features/queue/domain/use_case/get_all_queueis_use_case.dart';
+import 'package:asatic/features/queue/domain/use_case/get_queue_by_id_use_case.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 Future<Response> onRequest(RequestContext context) async {
@@ -17,7 +17,7 @@ Future<Response> onRequest(RequestContext context) async {
     try {
       if (params.containsKey('id')) {
         final result = await locator
-            .get<FindDeviceByIdUseCase>()
+            .get<FindQueueByIdUseCase>()
             .call(int.tryParse(params['id'] ?? '') ?? 0);
         if (result.hasError()) {
           return Response(statusCode: HttpStatus.noContent, body: 'nabod');
@@ -27,13 +27,15 @@ Future<Response> onRequest(RequestContext context) async {
           );
         }
       } else {
-        final result = await locator.get<FindAllDevicesUseCase>().call(0);
+        final result = await locator.get<FindAllQueuesUseCase>().call(0);
         if (result.hasError()) {
           return Response(statusCode: HttpStatus.noContent, body: 'nabod');
         } else {
           return Response.json(
-            body:
-                result.getValue()?.map((e) => e?.toJson() ?? {}).toList() ?? [],
+            body: result.getValue()?.map((e) => e?.toJson() ?? {}).toList() ??
+                [
+                  {'nashod': 'ridi'},
+                ],
           );
         }
       }
@@ -46,8 +48,8 @@ Future<Response> onRequest(RequestContext context) async {
     try {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
-      final result = await locator.get<CreateDeviceUseCase>().call(
-            Device.fromJson(requestJson),
+      final result = await locator.get<CreateQueueUseCase>().call(
+            QueueModel.fromJson(requestJson),
           );
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);
@@ -65,8 +67,8 @@ Future<Response> onRequest(RequestContext context) async {
     try {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
-      final result = await locator.get<UpdateDeviceInfoUseCase>().call(
-            Device.fromJson(requestJson),
+      final result = await locator.get<UpdateQueueInfoUseCase>().call(
+            QueueModel.fromJson(requestJson),
           );
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);

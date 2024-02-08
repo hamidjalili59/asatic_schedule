@@ -1,30 +1,28 @@
 import 'package:isar/isar.dart';
 
-part 'device.g.dart';
+part 'counter.g.dart';
 
 ///
 /// we create this model for pulling and pushing
 /// device information for devices and databases
 ///
 @collection
-class Device {
+class Counter {
   ///
   /// we use this model in List Usually
   ///
-  Device({
+  Counter({
     required this.name,
-    required this.message,
-    this.counterList,
+    this.queueList,
     this.id,
   });
 
   ///
-  factory Device.fromJson(Map<String, dynamic> json) {
-    return Device(
+  factory Counter.fromJson(Map<String, dynamic> json) {
+    return Counter(
       id: json['id'] as Id?,
       name: json['name'] as String?,
-      message: json['message'] as String?,
-      counterList: json['counterList'] as List<int>?,
+      queueList: json['queueList'] as List<int>?,
     );
   }
 
@@ -39,22 +37,16 @@ class Device {
   String? name;
 
   ///
-  /// this message printed by hardware
-  ///
-  String? message;
-
   ///
   ///
-  ///
-  List<int>? counterList; // cannot be nullable
+  List<int>? queueList; // cannot be nullable
 
   ///
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
-      'message': message,
-      'counterList': counterList,
+      'queueList': queueList,
     };
   }
 }
