@@ -5,7 +5,7 @@ class BaseResponse {
   ///
   /// explain data to baseResponse
   ///
-  const BaseResponse(this.statusCode, this.message, this.data);
+  const BaseResponse({this.statusCode = 200, this.message = '', this.data});
 
   ///
   /// http status code like 200 400 500
@@ -30,7 +30,11 @@ class BaseResponse {
     String newMessage,
     dynamic newData,
   ) {
-    return BaseResponse(newStatusCode, newMessage, newData);
+    return BaseResponse(
+      statusCode: newStatusCode,
+      message: newMessage,
+      data: newData,
+    );
   }
 
   ///

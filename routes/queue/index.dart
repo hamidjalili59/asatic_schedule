@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:asatic/features/core/models/model_with_parent_id.dart';
 import 'package:asatic/features/locator.dart';
 import 'package:asatic/features/queue/domain/models/queue.dart';
 import 'package:asatic/features/queue/domain/use_case/change_queue_info_use_case.dart';
@@ -49,7 +50,10 @@ Future<Response> onRequest(RequestContext context) async {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<CreateQueueUseCase>().call(
-            QueueModel.fromJson(requestJson),
+            ModelWithParentId<QueueModel>(
+              QueueModel.fromJson(requestJson),
+              requestJson['parentId'] as int,
+            ),
           );
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);
@@ -68,7 +72,10 @@ Future<Response> onRequest(RequestContext context) async {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<UpdateQueueInfoUseCase>().call(
-            QueueModel.fromJson(requestJson),
+            ModelWithParentId<QueueModel>(
+              QueueModel.fromJson(requestJson),
+              requestJson['parentId'] as int,
+            ),
           );
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);

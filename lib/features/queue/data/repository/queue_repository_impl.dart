@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:asatic/features/core/models/base_repository.dart';
+import 'package:asatic/features/core/models/model_with_parent_id.dart';
 import 'package:asatic/features/core/models/returnSaveFuncInfo.dart';
+import 'package:asatic/features/counter/domain/models/counter.dart';
 import 'package:asatic/features/locator.dart';
 import 'package:asatic/features/queue/domain/models/queue.dart';
 import 'package:isar/isar.dart';
@@ -9,19 +11,24 @@ import 'package:isar/isar.dart';
 ///
 /// implement logic of device data here
 ///
-class QueueRepositoryImpl extends BaseRepository<QueueModel> {
+class QueueRepositoryImpl
+    extends BaseRepository<ModelWithParentId<QueueModel>, QueueModel> {
   /// instance of ISAR Database
   late Isar db = locator.get<Isar>();
   @override
-  FutureOr<ReturnSaveFuncInfo<QueueModel>> create(QueueModel object) async {
+  FutureOr<ReturnSaveFuncInfo<QueueModel>> create(
+    ModelWithParentId<QueueModel> object,
+  ) async {
     try {
-      final newQueueModel = QueueModel(
-        name: object.name ?? 'UNNAMED',
-        lastTurn: object.lastTurn,
-      );
+      final newQueueModel = object.data;
 
       await db.writeTxn(() async {
-        await db.queueModels.put(newQueueModel); // insert & update
+        final counter = await db.counters.get(object.parentId);
+        await db.queueModels.put(newQueueModel).then((value) async {
+          final queueList = counter?.queueList?.toList();
+          queueList?.add(value);
+          counter?.queueList = queueList;
+        });
       });
       final result = ReturnSaveFuncInfo<QueueModel>()..setValue(newQueueModel);
       return result;
@@ -72,11 +79,13 @@ class QueueRepositoryImpl extends BaseRepository<QueueModel> {
   }
 
   @override
-  FutureOr<ReturnSaveFuncInfo<QueueModel>> updateById(QueueModel object) async {
+  FutureOr<ReturnSaveFuncInfo<QueueModel>> updateById(
+    ModelWithParentId<QueueModel> object,
+  ) async {
     final changedQueueModel =
-        await db.writeTxn(() => db.queueModels.put(object));
-    if (changedQueueModel == object.id) {
-      final result = ReturnSaveFuncInfo<QueueModel>()..setValue(object);
+        await db.writeTxn(() => db.queueModels.put(object.data));
+    if (changedQueueModel == object.data.id) {
+      final result = ReturnSaveFuncInfo<QueueModel>()..setValue(object.data);
       return result;
     } else {
       final result = ReturnSaveFuncInfo<QueueModel>()..setError();

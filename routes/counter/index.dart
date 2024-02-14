@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:asatic/features/core/models/model_with_parent_id.dart';
-import 'package:asatic/features/device/domain/models/device.dart';
-import 'package:asatic/features/device/domain/use_case/change_device_info_use_case.dart';
-import 'package:asatic/features/device/domain/use_case/create_device_use_case.dart';
-import 'package:asatic/features/device/domain/use_case/get_all_devices_use_case.dart';
-import 'package:asatic/features/device/domain/use_case/get_device_by_id_use_case.dart';
+import 'package:asatic/features/counter/domain/models/counter.dart';
+import 'package:asatic/features/counter/domain/use_case/change_counter_info_use_case.dart';
+import 'package:asatic/features/counter/domain/use_case/create_counter_use_case.dart';
+import 'package:asatic/features/counter/domain/use_case/get_all_counters_use_case.dart';
+import 'package:asatic/features/counter/domain/use_case/get_counter_by_id_use_case.dart';
 import 'package:asatic/features/locator.dart';
 import 'package:dart_frog/dart_frog.dart';
 
@@ -18,23 +18,25 @@ Future<Response> onRequest(RequestContext context) async {
     try {
       if (params.containsKey('id')) {
         final result = await locator
-            .get<FindDeviceByIdUseCase>()
+            .get<FindCounterByIdUseCase>()
             .call(int.tryParse(params['id'] ?? '') ?? 0);
         if (result.hasError()) {
           return Response(statusCode: HttpStatus.noContent, body: 'nabod');
         } else {
           return Response.json(
-            body: result.getValue()?.toJson() ?? {'json': 'null'},
+            body: result.getValue()?.toJson() ?? {'nashod': 'ridi'},
           );
         }
       } else {
-        final result = await locator.get<FindAllDevicesUseCase>().call(0);
+        final result = await locator.get<FindAllCountersUseCase>().call(0);
         if (result.hasError()) {
           return Response(statusCode: HttpStatus.noContent, body: 'nabod');
         } else {
           return Response.json(
-            body:
-                result.getValue()?.map((e) => e?.toJson() ?? {}).toList() ?? [],
+            body: result.getValue()?.map((e) => e?.toJson() ?? {}).toList() ??
+                [
+                  {'nashod': 'ridi'},
+                ],
           );
         }
       }
@@ -47,18 +49,16 @@ Future<Response> onRequest(RequestContext context) async {
     try {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
-      final result = await locator.get<CreateDeviceUseCase>().call(
-            ModelWithParentId<Device>(
-              Device.fromJson(requestJson['data'] as Map<String, dynamic>),
-              requestJson['admin_id'] as int,
+      final result = await locator.get<CreateCounterUseCase>().call(
+            ModelWithParentId<Counter>(
+              Counter.fromJson(requestJson['data'] as Map<String, dynamic>),
+              requestJson['device_id'] as int,
             ),
           );
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);
       } else {
-        return Response.json(
-          body: requestJson,
-        );
+        return Response.json(body: requestJson);
       }
     } catch (e) {
       return Response(statusCode: HttpStatus.unauthorized);
@@ -69,10 +69,10 @@ Future<Response> onRequest(RequestContext context) async {
     try {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
-      final result = await locator.get<UpdateDeviceInfoUseCase>().call(
-            ModelWithParentId<Device>(
-              Device.fromJson(requestJson['data'] as Map<String, dynamic>),
-              requestJson['admin_id'] as int,
+      final result = await locator.get<UpdateCounterInfoUseCase>().call(
+            ModelWithParentId<Counter>(
+              Counter.fromJson(requestJson),
+              requestJson['parentId'] as int,
             ),
           );
       if (result.hasError()) {

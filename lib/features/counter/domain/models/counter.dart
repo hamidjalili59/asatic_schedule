@@ -22,7 +22,9 @@ class Counter {
     return Counter(
       id: json['id'] as Id?,
       name: json['name'] as String?,
-      queueList: json['queueList'] as List<int>?,
+      queueList: json['queueList'] != null
+          ? (json['queueList'] as List<dynamic>).map((e) => e as int).toList()
+          : null,
     );
   }
 

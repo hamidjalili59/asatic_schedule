@@ -24,7 +24,9 @@ class Device {
       id: json['id'] as Id?,
       name: json['name'] as String?,
       message: json['message'] as String?,
-      counterList: json['counterList'] as List<int>?,
+      counterList: json['counterList'] != null
+          ? (json['counterList'] as List<dynamic>).map((e) => e as int).toList()
+          : null,
     );
   }
 

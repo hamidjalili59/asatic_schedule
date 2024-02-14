@@ -1,20 +1,24 @@
+import 'package:asatic/features/core/models/model_with_parent_id.dart';
 import 'package:asatic/features/core/models/returnSaveFuncInfo.dart';
 import 'package:asatic/features/core/models/use_case.dart';
 import 'package:asatic/features/device/data/repository_impl/device_repository_impl.dart';
 import 'package:asatic/features/device/domain/models/device.dart';
+import 'package:asatic/features/device/domain/models/get_device_response.dart';
 
 ///
-class UpdateDeviceInfoUseCase
-    extends UseCase<ReturnSaveFuncInfo<Device>, Device> {
+class UpdateDeviceInfoUseCase extends UseCase<
+    ReturnSaveFuncInfo<DeviceResponse>, ModelWithParentId<Device>> {
   ///
   UpdateDeviceInfoUseCase(this.repo);
 
   ///
   final DeviceRepositoryImpl repo;
   @override
-  Future<ReturnSaveFuncInfo<Device>> call(Device? param) async {
+  Future<ReturnSaveFuncInfo<DeviceResponse>> call(
+    ModelWithParentId<Device>? param,
+  ) async {
     if (param == null) {
-      return ReturnSaveFuncInfo<Device>()..setError();
+      return ReturnSaveFuncInfo<DeviceResponse>()..setError();
     } else {
       return repo.updateById(param);
     }
