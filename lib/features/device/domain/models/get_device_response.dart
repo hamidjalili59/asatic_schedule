@@ -1,4 +1,4 @@
-import 'package:asatic/features/counter/domain/models/counter.dart';
+import 'package:asatic/features/queue/domain/models/queue.dart';
 
 ///
 class DeviceResponse {
@@ -7,7 +7,7 @@ class DeviceResponse {
     required this.id,
     required this.name,
     required this.message,
-    required this.counterList,
+    required this.queueList,
   });
 
   ///
@@ -28,7 +28,7 @@ class DeviceResponse {
   ///
   ///
   ///
-  final List<Counter?>? counterList; // cannot be nullable
+  final List<QueueModel?>? queueList; // cannot be nullable
 
   ///
   Map<String, dynamic> toJson() {
@@ -36,7 +36,7 @@ class DeviceResponse {
       'id': id,
       'name': name,
       'message': message,
-      'counterList': counterList,
+      'queueList': queueList,
     };
   }
 }

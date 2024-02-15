@@ -23,12 +23,12 @@ class DeviceRepositoryImpl
     ModelWithParentId<Device> object,
   ) async {
     try {
-      final newAdmin = object.data;
+      final newDevice = object.data;
 
       await db.writeTxn(
         () async {
           final admin = await db.admins.get(object.parentId);
-          await db.devices.put(newAdmin).then((value) async {
+          await db.devices.put(newDevice).then((value) async {
             final deviceList = admin?.deviceList?.toList();
             deviceList?.add(value);
             admin?.deviceList = deviceList;
@@ -48,7 +48,7 @@ class DeviceRepositoryImpl
       );
 
       final result = ReturnSaveFuncInfo<DeviceResponse>()
-        ..setValue(await newAdmin.toDeviceResponse());
+        ..setValue(await newDevice.toDeviceResponse());
       return result;
     } catch (e) {
       final result = ReturnSaveFuncInfo<DeviceResponse>()..setError();

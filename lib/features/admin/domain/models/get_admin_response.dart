@@ -1,4 +1,4 @@
-import 'package:asatic/features/device/domain/models/device.dart';
+import 'package:asatic/features/device/domain/models/get_device_response.dart';
 import 'package:isar/isar.dart';
 
 ///
@@ -43,7 +43,7 @@ class AdminResponse {
   ///
   ///
   ///
-  final List<Device?> deviceList; // cannot be nullable
+  final List<DeviceResponse?> deviceList; // cannot be nullable
 
   ///
   Map<String, dynamic> toJson() {

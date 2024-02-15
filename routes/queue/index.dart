@@ -51,7 +51,7 @@ Future<Response> onRequest(RequestContext context) async {
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<CreateQueueUseCase>().call(
             ModelWithParentId<QueueModel>(
-              QueueModel.fromJson(requestJson),
+              QueueModel.fromJson(requestJson['data'] as Map<String, dynamic>),
               requestJson['parentId'] as int,
             ),
           );
@@ -73,8 +73,8 @@ Future<Response> onRequest(RequestContext context) async {
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<UpdateQueueInfoUseCase>().call(
             ModelWithParentId<QueueModel>(
-              QueueModel.fromJson(requestJson),
-              requestJson['parentId'] as int,
+              QueueModel.fromJson(requestJson['data'] as Map<String, dynamic>),
+              requestJson['parent_Id'] as int,
             ),
           );
       if (result.hasError()) {

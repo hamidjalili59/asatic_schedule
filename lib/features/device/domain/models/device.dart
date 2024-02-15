@@ -14,7 +14,7 @@ class Device {
   Device({
     required this.name,
     required this.message,
-    this.counterList,
+    this.queueList,
     this.id,
   });
 
@@ -24,8 +24,8 @@ class Device {
       id: json['id'] as Id?,
       name: json['name'] as String?,
       message: json['message'] as String?,
-      counterList: json['counterList'] != null
-          ? (json['counterList'] as List<dynamic>).map((e) => e as int).toList()
+      queueList: json['queueList'] != null
+          ? (json['queueList'] as List<dynamic>).map((e) => e as int).toList()
           : null,
     );
   }
@@ -48,7 +48,7 @@ class Device {
   ///
   ///
   ///
-  List<int>? counterList; // cannot be nullable
+  List<int>? queueList; // cannot be nullable
 
   ///
   Map<String, dynamic> toJson() {
@@ -56,7 +56,7 @@ class Device {
       'id': id,
       'name': name,
       'message': message,
-      'counterList': counterList,
+      'queueList': queueList,
     };
   }
 }

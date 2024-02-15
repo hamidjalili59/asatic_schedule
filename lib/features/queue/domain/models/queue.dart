@@ -14,17 +14,19 @@ class QueueModel {
   QueueModel({
     required this.name,
     required this.lastTurn,
+    required this.maxRange,
+    required this.minRange,
     this.id,
   });
 
   ///
-  factory QueueModel.fromJson(Map<String, dynamic> json) {
-    return QueueModel(
-      id: json['id'] as Id?,
-      name: json['name'] as String?,
-      lastTurn: json['lastTurn'] as byte,
-    );
-  }
+  factory QueueModel.fromJson(Map<String, dynamic> json) => QueueModel(
+        id: json['id'] as Id?,
+        name: json['name'] as String?,
+        lastTurn: json['lastTurn'] as int?,
+        maxRange: json['maxRange'] as int?,
+        minRange: json['minRange'] as int?,
+      );
 
   ///
   /// i want to write Id with UUid
@@ -37,15 +39,26 @@ class QueueModel {
   String? name;
 
   ///
-  /// current Turn Count number on hardware
+  /// name of queue
   ///
-  byte lastTurn;
+  int? minRange;
 
   ///
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
-  }
+  /// name of queue
+  ///
+  int? maxRange;
+
+  ///
+  /// current Turn Count number on hardware
+  ///
+  int? lastTurn;
+
+  ///
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'lastTurn': lastTurn,
+        'maxRange': maxRange,
+        'minRange': minRange,
+      };
 }

@@ -3,11 +3,6 @@ import 'package:asatic/features/admin/domain/use_case/change_admin_info_use_case
 import 'package:asatic/features/admin/domain/use_case/create_admin_use_case.dart';
 import 'package:asatic/features/admin/domain/use_case/get_admin_by_id_use_case.dart';
 import 'package:asatic/features/admin/domain/use_case/get_all_admin_use_case.dart';
-import 'package:asatic/features/counter/data/repository_impl/counter_repository_impl.dart';
-import 'package:asatic/features/counter/domain/use_case/change_counter_info_use_case.dart';
-import 'package:asatic/features/counter/domain/use_case/create_counter_use_case.dart';
-import 'package:asatic/features/counter/domain/use_case/get_all_counters_use_case.dart';
-import 'package:asatic/features/counter/domain/use_case/get_counter_by_id_use_case.dart';
 import 'package:asatic/features/device/data/repository_impl/device_repository_impl.dart';
 import 'package:asatic/features/device/domain/use_case/change_device_info_use_case.dart';
 import 'package:asatic/features/device/domain/use_case/create_device_use_case.dart';
@@ -47,19 +42,6 @@ void setUp() {
     ..registerSingleton<FindAllQueuesUseCase>(FindAllQueuesUseCase(locator()))
     ..registerSingleton<FindQueueByIdUseCase>(
       FindQueueByIdUseCase(locator()),
-    )
-
-    /// Counters
-    ..registerSingleton<CounterRepositoryImpl>(CounterRepositoryImpl())
-    ..registerSingleton<CreateCounterUseCase>(CreateCounterUseCase(locator()))
-    ..registerSingleton<UpdateCounterInfoUseCase>(
-      UpdateCounterInfoUseCase(locator()),
-    )
-    ..registerSingleton<FindAllCountersUseCase>(
-      FindAllCountersUseCase(locator()),
-    )
-    ..registerSingleton<FindCounterByIdUseCase>(
-      FindCounterByIdUseCase(locator()),
     )
 
     /// Admins

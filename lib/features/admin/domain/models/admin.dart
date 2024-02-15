@@ -47,7 +47,7 @@ class Admin {
   ///
   /// name of admin
   ///
-  short? phone;
+  int? phone;
 
   ///
   /// name of admin

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:asatic/features/core/models/base_repository.dart';
 import 'package:asatic/features/core/models/model_with_parent_id.dart';
 import 'package:asatic/features/core/models/returnSaveFuncInfo.dart';
-import 'package:asatic/features/counter/domain/models/counter.dart';
+import 'package:asatic/features/device/domain/models/device.dart';
 import 'package:asatic/features/locator.dart';
 import 'package:asatic/features/queue/domain/models/queue.dart';
 import 'package:isar/isar.dart';
@@ -23,12 +23,21 @@ class QueueRepositoryImpl
       final newQueueModel = object.data;
 
       await db.writeTxn(() async {
-        final counter = await db.counters.get(object.parentId);
+        final device = await db.devices.get(object.parentId);
         await db.queueModels.put(newQueueModel).then((value) async {
-          final queueList = counter?.queueList?.toList();
+          final queueList = device?.queueList?.toList();
           queueList?.add(value);
-          counter?.queueList = queueList;
+          device?.queueList = queueList;
         });
+        await db.devices.put(
+          device ??
+              Device(
+                id: object.parentId,
+                message: device?.message,
+                name: device?.name,
+                queueList: device?.queueList,
+              ),
+        );
       });
       final result = ReturnSaveFuncInfo<QueueModel>()..setValue(newQueueModel);
       return result;
