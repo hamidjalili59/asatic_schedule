@@ -44,7 +44,7 @@ class DeviceRepositoryImpl
                   phone: admin?.phone,
                 ),
           );
-        }, // insert & uapdate
+        }, // insert & update
       );
 
       final result = ReturnSaveFuncInfo<DeviceResponse>()
