@@ -74,7 +74,7 @@ Future<Response> onRequest(RequestContext context) async {
       final result = await locator.get<UpdateQueueInfoUseCase>().call(
             ModelWithParentId<QueueModel>(
               QueueModel.fromJson(requestJson['data'] as Map<String, dynamic>),
-              requestJson['parent_Id'] as int,
+              requestJson['parentId'] as int,
             ),
           );
       if (result.hasError()) {
@@ -86,6 +86,7 @@ Future<Response> onRequest(RequestContext context) async {
         );
       }
     } catch (e) {
+      print(e);
       return Response(statusCode: HttpStatus.unauthorized);
     }
   }

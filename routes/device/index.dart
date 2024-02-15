@@ -50,7 +50,7 @@ Future<Response> onRequest(RequestContext context) async {
       final result = await locator.get<CreateDeviceUseCase>().call(
             ModelWithParentId<Device>(
               Device.fromJson(requestJson['data'] as Map<String, dynamic>),
-              requestJson['admin_id'] as int,
+              requestJson['parentId'] as int,
             ),
           );
       if (result.hasError()) {
@@ -72,7 +72,7 @@ Future<Response> onRequest(RequestContext context) async {
       final result = await locator.get<UpdateDeviceInfoUseCase>().call(
             ModelWithParentId<Device>(
               Device.fromJson(requestJson['data'] as Map<String, dynamic>),
-              requestJson['admin_id'] as int,
+              requestJson['parentId'] as int,
             ),
           );
       if (result.hasError()) {
