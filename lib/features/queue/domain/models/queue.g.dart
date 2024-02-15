@@ -20,10 +20,20 @@ const QueueModelSchema = CollectionSchema(
     r'lastTurn': PropertySchema(
       id: 0,
       name: r'lastTurn',
-      type: IsarType.byte,
+      type: IsarType.long,
+    ),
+    r'maxRange': PropertySchema(
+      id: 1,
+      name: r'maxRange',
+      type: IsarType.long,
+    ),
+    r'minRange': PropertySchema(
+      id: 2,
+      name: r'minRange',
+      type: IsarType.long,
     ),
     r'name': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     )
@@ -63,8 +73,10 @@ void _queueModelSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeByte(offsets[0], object.lastTurn);
-  writer.writeString(offsets[1], object.name);
+  writer.writeLong(offsets[0], object.lastTurn);
+  writer.writeLong(offsets[1], object.maxRange);
+  writer.writeLong(offsets[2], object.minRange);
+  writer.writeString(offsets[3], object.name);
 }
 
 QueueModel _queueModelDeserialize(
@@ -75,8 +87,10 @@ QueueModel _queueModelDeserialize(
 ) {
   final object = QueueModel(
     id: id,
-    lastTurn: reader.readByte(offsets[0]),
-    name: reader.readStringOrNull(offsets[1]),
+    lastTurn: reader.readLong(offsets[0]),
+    maxRange: reader.readLongOrNull(offsets[1]),
+    minRange: reader.readLongOrNull(offsets[2]),
+    name: reader.readStringOrNull(offsets[3]),
   );
   return object;
 }
@@ -89,8 +103,12 @@ P _queueModelDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readByte(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
+      return (reader.readLongOrNull(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
+    case 3:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -311,6 +329,148 @@ extension QueueModelQueryFilter
     });
   }
 
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> maxRangeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'maxRange',
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition>
+      maxRangeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'maxRange',
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> maxRangeEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'maxRange',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition>
+      maxRangeGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'maxRange',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> maxRangeLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'maxRange',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> maxRangeBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'maxRange',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> minRangeIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'minRange',
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition>
+      minRangeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'minRange',
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> minRangeEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'minRange',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition>
+      minRangeGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'minRange',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> minRangeLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'minRange',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> minRangeBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'minRange',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> nameIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -478,6 +638,30 @@ extension QueueModelQuerySortBy
     });
   }
 
+  QueryBuilder<QueueModel, QueueModel, QAfterSortBy> sortByMaxRange() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxRange', Sort.asc);
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterSortBy> sortByMaxRangeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxRange', Sort.desc);
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterSortBy> sortByMinRange() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'minRange', Sort.asc);
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterSortBy> sortByMinRangeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'minRange', Sort.desc);
+    });
+  }
+
   QueryBuilder<QueueModel, QueueModel, QAfterSortBy> sortByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -517,6 +701,30 @@ extension QueueModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<QueueModel, QueueModel, QAfterSortBy> thenByMaxRange() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxRange', Sort.asc);
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterSortBy> thenByMaxRangeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'maxRange', Sort.desc);
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterSortBy> thenByMinRange() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'minRange', Sort.asc);
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterSortBy> thenByMinRangeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'minRange', Sort.desc);
+    });
+  }
+
   QueryBuilder<QueueModel, QueueModel, QAfterSortBy> thenByName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.asc);
@@ -535,6 +743,18 @@ extension QueueModelQueryWhereDistinct
   QueryBuilder<QueueModel, QueueModel, QDistinct> distinctByLastTurn() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastTurn');
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QDistinct> distinctByMaxRange() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'maxRange');
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QDistinct> distinctByMinRange() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'minRange');
     });
   }
 
@@ -557,6 +777,18 @@ extension QueueModelQueryProperty
   QueryBuilder<QueueModel, int, QQueryOperations> lastTurnProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastTurn');
+    });
+  }
+
+  QueryBuilder<QueueModel, int?, QQueryOperations> maxRangeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'maxRange');
+    });
+  }
+
+  QueryBuilder<QueueModel, int?, QQueryOperations> minRangeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'minRange');
     });
   }
 

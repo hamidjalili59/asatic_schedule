@@ -3,21 +3,21 @@ import 'dart:async';
 import 'package:asatic/features/core/models/returnSaveFuncInfo.dart';
 
 ///
-/// implement default and usally method of repositories
+/// default and usally method of repositories
 ///
-abstract class BaseRepository<T> {
+abstract class BaseRepository<T, R> {
   ///
-  FutureOr<ReturnSaveFuncInfo<T>> create(T object);
+  FutureOr<ReturnSaveFuncInfo<R>> create(T object);
 
   ///
-  FutureOr<ReturnSaveFuncInfo<T>> findById(int id);
+  FutureOr<ReturnSaveFuncInfo<R>> findById(int id);
 
   ///
-  FutureOr<ReturnSaveFuncInfo<List<T?>>> findAll();
+  FutureOr<ReturnSaveFuncInfo<List<R?>>> findAll();
 
   ///
   FutureOr<ReturnSaveFuncInfo<bool>> deleteById(int id);
 
   ///
-  FutureOr<ReturnSaveFuncInfo<T>> updateById(T object);
+  FutureOr<ReturnSaveFuncInfo<R>> updateById(T object);
 }

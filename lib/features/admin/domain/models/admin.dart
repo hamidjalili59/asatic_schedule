@@ -28,7 +28,9 @@ class Admin {
       password: json['password'] as String?,
       phone: json['phone'] as short?,
       address: json['address'] as String?,
-      deviceList: json['deviceList'] as List<int>?,
+      deviceList: json['deviceList'] != null
+          ? (json['deviceList'] as List<dynamic>).map((e) => e as int).toList()
+          : null,
     );
   }
 
@@ -45,7 +47,7 @@ class Admin {
   ///
   /// name of admin
   ///
-  short? phone;
+  int? phone;
 
   ///
   /// name of admin

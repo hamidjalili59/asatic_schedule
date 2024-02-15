@@ -40,7 +40,7 @@ const AdminSchema = CollectionSchema(
     r'phone': PropertySchema(
       id: 4,
       name: r'phone',
-      type: IsarType.int,
+      type: IsarType.long,
     )
   },
   estimateSize: _adminEstimateSize,
@@ -100,7 +100,7 @@ void _adminSerialize(
   writer.writeLongList(offsets[1], object.deviceList);
   writer.writeString(offsets[2], object.name);
   writer.writeString(offsets[3], object.password);
-  writer.writeInt(offsets[4], object.phone);
+  writer.writeLong(offsets[4], object.phone);
 }
 
 Admin _adminDeserialize(
@@ -115,7 +115,7 @@ Admin _adminDeserialize(
     id: id,
     name: reader.readStringOrNull(offsets[2]),
     password: reader.readStringOrNull(offsets[3]),
-    phone: reader.readIntOrNull(offsets[4]),
+    phone: reader.readLongOrNull(offsets[4]),
   );
   return object;
 }
@@ -136,7 +136,7 @@ P _adminDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readIntOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }

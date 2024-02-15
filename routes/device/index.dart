@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:asatic/features/core/models/model_with_parent_id.dart';
 import 'package:asatic/features/device/domain/models/device.dart';
 import 'package:asatic/features/device/domain/use_case/change_device_info_use_case.dart';
 import 'package:asatic/features/device/domain/use_case/create_device_use_case.dart';
@@ -23,7 +24,7 @@ Future<Response> onRequest(RequestContext context) async {
           return Response(statusCode: HttpStatus.noContent, body: 'nabod');
         } else {
           return Response.json(
-            body: result.getValue()?.toJson() ?? {'nashod': 'ridi'},
+            body: result.getValue()?.toJson() ?? {'json': 'null'},
           );
         }
       } else {
@@ -47,7 +48,10 @@ Future<Response> onRequest(RequestContext context) async {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<CreateDeviceUseCase>().call(
-            Device.fromJson(requestJson),
+            ModelWithParentId<Device>(
+              Device.fromJson(requestJson['data'] as Map<String, dynamic>),
+              requestJson['admin_id'] as int,
+            ),
           );
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);
@@ -66,7 +70,10 @@ Future<Response> onRequest(RequestContext context) async {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<UpdateDeviceInfoUseCase>().call(
-            Device.fromJson(requestJson),
+            ModelWithParentId<Device>(
+              Device.fromJson(requestJson['data'] as Map<String, dynamic>),
+              requestJson['admin_id'] as int,
+            ),
           );
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);
