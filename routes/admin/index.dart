@@ -46,17 +46,17 @@ Future<Response> onRequest(RequestContext context) async {
 
   Future<Response> postMethod() async {
     try {
-      // final adminList = ;
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<CreateAdminUseCase>().call(
             Admin.fromJson(requestJson),
           );
+
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);
       } else {
         return Response.json(
-          body: requestJson,
+          body: result.getValue()?.toJson() ?? {},
         );
       }
     } catch (e) {
