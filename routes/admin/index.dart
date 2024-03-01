@@ -46,6 +46,7 @@ Future<Response> onRequest(RequestContext context) async {
 
   Future<Response> postMethod() async {
     try {
+      // final adminList = ;
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<CreateAdminUseCase>().call(

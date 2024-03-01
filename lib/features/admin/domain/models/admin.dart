@@ -16,17 +16,17 @@ class Admin {
     required this.address,
     required this.password,
     required this.phone,
-    this.id,
+    // this.id,
     this.deviceList,
   });
 
   ///
   factory Admin.fromJson(Map<String, dynamic> json) {
     return Admin(
-      id: json['id'] as Id?,
+      // id: json['id'] as Id?,
+      phone: json['phone'] as Id?,
       name: json['name'] as String?,
       password: json['password'] as String?,
-      phone: json['phone'] as short?,
       address: json['address'] as String?,
       deviceList: json['deviceList'] != null
           ? (json['deviceList'] as List<dynamic>).map((e) => e as int).toList()
@@ -37,17 +37,17 @@ class Admin {
   ///
   /// i want to write Id with UUid
   ///
-  Id? id = Isar.autoIncrement;
+  Id? phone;
 
   ///
   /// name of admin
   ///
   String? name;
 
-  ///
-  /// name of admin
-  ///
-  int? phone;
+  // ///
+  // /// name of admin
+  // ///
+  // int? phone;
 
   ///
   /// name of admin
@@ -67,7 +67,6 @@ class Admin {
   ///
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'address': address,
       'phone': phone,

@@ -87,7 +87,7 @@ QueueModel _queueModelDeserialize(
 ) {
   final object = QueueModel(
     id: id,
-    lastTurn: reader.readLong(offsets[0]),
+    lastTurn: reader.readLongOrNull(offsets[0]),
     maxRange: reader.readLongOrNull(offsets[1]),
     minRange: reader.readLongOrNull(offsets[2]),
     name: reader.readStringOrNull(offsets[3]),
@@ -103,7 +103,7 @@ P _queueModelDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 1:
       return (reader.readLongOrNull(offset)) as P;
     case 2:
@@ -275,8 +275,25 @@ extension QueueModelQueryFilter
     });
   }
 
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> lastTurnIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastTurn',
+      ));
+    });
+  }
+
+  QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition>
+      lastTurnIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastTurn',
+      ));
+    });
+  }
+
   QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> lastTurnEqualTo(
-      int value) {
+      int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'lastTurn',
@@ -287,7 +304,7 @@ extension QueueModelQueryFilter
 
   QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition>
       lastTurnGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -300,7 +317,7 @@ extension QueueModelQueryFilter
   }
 
   QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> lastTurnLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -313,8 +330,8 @@ extension QueueModelQueryFilter
   }
 
   QueryBuilder<QueueModel, QueueModel, QAfterFilterCondition> lastTurnBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -774,7 +791,7 @@ extension QueueModelQueryProperty
     });
   }
 
-  QueryBuilder<QueueModel, int, QQueryOperations> lastTurnProperty() {
+  QueryBuilder<QueueModel, int?, QQueryOperations> lastTurnProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastTurn');
     });

@@ -36,18 +36,13 @@ const AdminSchema = CollectionSchema(
       id: 3,
       name: r'password',
       type: IsarType.string,
-    ),
-    r'phone': PropertySchema(
-      id: 4,
-      name: r'phone',
-      type: IsarType.long,
     )
   },
   estimateSize: _adminEstimateSize,
   serialize: _adminSerialize,
   deserialize: _adminDeserialize,
   deserializeProp: _adminDeserializeProp,
-  idName: r'id',
+  idName: r'phone',
   indexes: {},
   links: {},
   embeddedSchemas: {},
@@ -100,7 +95,6 @@ void _adminSerialize(
   writer.writeLongList(offsets[1], object.deviceList);
   writer.writeString(offsets[2], object.name);
   writer.writeString(offsets[3], object.password);
-  writer.writeLong(offsets[4], object.phone);
 }
 
 Admin _adminDeserialize(
@@ -112,10 +106,9 @@ Admin _adminDeserialize(
   final object = Admin(
     address: reader.readStringOrNull(offsets[0]),
     deviceList: reader.readLongList(offsets[1]),
-    id: id,
     name: reader.readStringOrNull(offsets[2]),
     password: reader.readStringOrNull(offsets[3]),
-    phone: reader.readLongOrNull(offsets[4]),
+    phone: id,
   );
   return object;
 }
@@ -135,15 +128,13 @@ P _adminDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 3:
       return (reader.readStringOrNull(offset)) as P;
-    case 4:
-      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
 Id _adminGetId(Admin object) {
-  return object.id ?? Isar.autoIncrement;
+  return object.phone ?? Isar.autoIncrement;
 }
 
 List<IsarLinkBase<dynamic>> _adminGetLinks(Admin object) {
@@ -151,11 +142,11 @@ List<IsarLinkBase<dynamic>> _adminGetLinks(Admin object) {
 }
 
 void _adminAttach(IsarCollection<dynamic> col, Id id, Admin object) {
-  object.id = id;
+  object.phone = id;
 }
 
 extension AdminQueryWhereSort on QueryBuilder<Admin, Admin, QWhere> {
-  QueryBuilder<Admin, Admin, QAfterWhere> anyId() {
+  QueryBuilder<Admin, Admin, QAfterWhere> anyPhone() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
@@ -163,66 +154,66 @@ extension AdminQueryWhereSort on QueryBuilder<Admin, Admin, QWhere> {
 }
 
 extension AdminQueryWhere on QueryBuilder<Admin, Admin, QWhereClause> {
-  QueryBuilder<Admin, Admin, QAfterWhereClause> idEqualTo(Id id) {
+  QueryBuilder<Admin, Admin, QAfterWhereClause> phoneEqualTo(Id phone) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
-        lower: id,
-        upper: id,
+        lower: phone,
+        upper: phone,
       ));
     });
   }
 
-  QueryBuilder<Admin, Admin, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<Admin, Admin, QAfterWhereClause> phoneNotEqualTo(Id phone) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
             .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
+              IdWhereClause.lessThan(upper: phone, includeUpper: false),
             )
             .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
+              IdWhereClause.greaterThan(lower: phone, includeLower: false),
             );
       } else {
         return query
             .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
+              IdWhereClause.greaterThan(lower: phone, includeLower: false),
             )
             .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
+              IdWhereClause.lessThan(upper: phone, includeUpper: false),
             );
       }
     });
   }
 
-  QueryBuilder<Admin, Admin, QAfterWhereClause> idGreaterThan(Id id,
+  QueryBuilder<Admin, Admin, QAfterWhereClause> phoneGreaterThan(Id phone,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
-        IdWhereClause.greaterThan(lower: id, includeLower: include),
+        IdWhereClause.greaterThan(lower: phone, includeLower: include),
       );
     });
   }
 
-  QueryBuilder<Admin, Admin, QAfterWhereClause> idLessThan(Id id,
+  QueryBuilder<Admin, Admin, QAfterWhereClause> phoneLessThan(Id phone,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
-        IdWhereClause.lessThan(upper: id, includeUpper: include),
+        IdWhereClause.lessThan(upper: phone, includeUpper: include),
       );
     });
   }
 
-  QueryBuilder<Admin, Admin, QAfterWhereClause> idBetween(
-    Id lowerId,
-    Id upperId, {
+  QueryBuilder<Admin, Admin, QAfterWhereClause> phoneBetween(
+    Id lowerPhone,
+    Id upperPhone, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
-        lower: lowerId,
+        lower: lowerPhone,
         includeLower: includeLower,
-        upper: upperId,
+        upper: upperPhone,
         includeUpper: includeUpper,
       ));
     });
@@ -527,74 +518,6 @@ extension AdminQueryFilter on QueryBuilder<Admin, Admin, QFilterCondition> {
         upper,
         includeUpper,
       );
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> idIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'id',
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> idIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'id',
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> idEqualTo(Id? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> idGreaterThan(
-    Id? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> idLessThan(
-    Id? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> idBetween(
-    Id? lower,
-    Id? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
     });
   }
 
@@ -904,7 +827,7 @@ extension AdminQueryFilter on QueryBuilder<Admin, Admin, QFilterCondition> {
     });
   }
 
-  QueryBuilder<Admin, Admin, QAfterFilterCondition> phoneEqualTo(int? value) {
+  QueryBuilder<Admin, Admin, QAfterFilterCondition> phoneEqualTo(Id? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'phone',
@@ -914,7 +837,7 @@ extension AdminQueryFilter on QueryBuilder<Admin, Admin, QFilterCondition> {
   }
 
   QueryBuilder<Admin, Admin, QAfterFilterCondition> phoneGreaterThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -927,7 +850,7 @@ extension AdminQueryFilter on QueryBuilder<Admin, Admin, QFilterCondition> {
   }
 
   QueryBuilder<Admin, Admin, QAfterFilterCondition> phoneLessThan(
-    int? value, {
+    Id? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -940,8 +863,8 @@ extension AdminQueryFilter on QueryBuilder<Admin, Admin, QFilterCondition> {
   }
 
   QueryBuilder<Admin, Admin, QAfterFilterCondition> phoneBetween(
-    int? lower,
-    int? upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -997,18 +920,6 @@ extension AdminQuerySortBy on QueryBuilder<Admin, Admin, QSortBy> {
       return query.addSortBy(r'password', Sort.desc);
     });
   }
-
-  QueryBuilder<Admin, Admin, QAfterSortBy> sortByPhone() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'phone', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterSortBy> sortByPhoneDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'phone', Sort.desc);
-    });
-  }
 }
 
 extension AdminQuerySortThenBy on QueryBuilder<Admin, Admin, QSortThenBy> {
@@ -1021,18 +932,6 @@ extension AdminQuerySortThenBy on QueryBuilder<Admin, Admin, QSortThenBy> {
   QueryBuilder<Admin, Admin, QAfterSortBy> thenByAddressDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'address', Sort.desc);
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterSortBy> thenById() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Admin, Admin, QAfterSortBy> thenByIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'id', Sort.desc);
     });
   }
 
@@ -1100,18 +999,12 @@ extension AdminQueryWhereDistinct on QueryBuilder<Admin, Admin, QDistinct> {
       return query.addDistinctBy(r'password', caseSensitive: caseSensitive);
     });
   }
-
-  QueryBuilder<Admin, Admin, QDistinct> distinctByPhone() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'phone');
-    });
-  }
 }
 
 extension AdminQueryProperty on QueryBuilder<Admin, Admin, QQueryProperty> {
-  QueryBuilder<Admin, int, QQueryOperations> idProperty() {
+  QueryBuilder<Admin, int, QQueryOperations> phoneProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'id');
+      return query.addPropertyName(r'phone');
     });
   }
 
@@ -1136,12 +1029,6 @@ extension AdminQueryProperty on QueryBuilder<Admin, Admin, QQueryProperty> {
   QueryBuilder<Admin, String?, QQueryOperations> passwordProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'password');
-    });
-  }
-
-  QueryBuilder<Admin, int?, QQueryOperations> phoneProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'phone');
     });
   }
 }

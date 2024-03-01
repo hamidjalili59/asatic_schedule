@@ -52,13 +52,11 @@ class AdminRepositoryImpl extends BaseRepository<Admin, AdminResponse> {
 
   @override
   FutureOr<ReturnSaveFuncInfo<List<AdminResponse?>>> findAll() async {
-    final adminList = await db.admins.getAll(
-      List.generate(await db.admins.count(), (index) => index + 1),
-    );
+    final adminList = await db.admins.where().findAll();
 
     final responseAdmins = List<AdminResponse?>.empty(growable: true);
     for (final element in adminList) {
-      responseAdmins.add(await element?.toAdminResponse());
+      responseAdmins.add(await element.toAdminResponse());
     }
 
     if (adminList.isNotEmpty) {
@@ -87,7 +85,7 @@ class AdminRepositoryImpl extends BaseRepository<Admin, AdminResponse> {
   @override
   FutureOr<ReturnSaveFuncInfo<AdminResponse>> updateById(Admin object) async {
     final changedAdmin = await db.writeTxn(() => db.admins.put(object));
-    if (changedAdmin == object.id) {
+    if (changedAdmin == object.phone) {
       final result = ReturnSaveFuncInfo<AdminResponse>()
         ..setValue(await object.toAdminResponse());
       return result;

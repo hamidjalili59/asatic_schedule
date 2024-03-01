@@ -36,7 +36,7 @@ class DeviceRepositoryImpl
           await db.admins.put(
             admin ??
                 Admin(
-                  id: object.parentId,
+                  // id: object.parentId,
                   deviceList: admin?.deviceList,
                   name: admin?.name,
                   address: admin?.address,
