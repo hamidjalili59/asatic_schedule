@@ -122,7 +122,8 @@ class DeviceRepositoryImpl extends BaseRepository<Device, DeviceResponse> {
   FutureOr<ReturnSaveFuncInfo<DeviceResponse>> updateById(
     Device object,
   ) async {
-    final changedDevice = await db.writeTxn(() async => db.devices.put(object));
+    final changedDevice =
+        await db.writeTxn<int>(() async => db.devices.put(object));
     if (changedDevice == object.id) {
       final result = ReturnSaveFuncInfo<DeviceResponse>()
         ..setValue(await object.toDeviceResponse());
