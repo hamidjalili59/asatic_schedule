@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:asatic/features/admin/domain/models/admin.dart';
 import 'package:asatic/features/admin/domain/use_case/change_admin_info_use_case.dart';
 import 'package:asatic/features/admin/domain/use_case/create_admin_use_case.dart';
+import 'package:asatic/features/admin/domain/use_case/delete_device_use_case.dart';
 import 'package:asatic/features/admin/domain/use_case/get_admin_by_id_use_case.dart';
 import 'package:asatic/features/admin/domain/use_case/get_all_admin_use_case.dart';
+import 'package:asatic/features/core/models/model_with_parent_id.dart';
 import 'package:asatic/features/locator.dart';
 import 'package:dart_frog/dart_frog.dart';
 
@@ -49,7 +51,7 @@ Future<Response> onRequest(RequestContext context) async {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<CreateAdminUseCase>().call(
-            Admin.fromJson(requestJson),
+            ModelWithParentId<Admin>(Admin.fromJson(requestJson), 0),
           );
 
       if (result.hasError()) {
@@ -57,6 +59,25 @@ Future<Response> onRequest(RequestContext context) async {
       } else {
         return Response.json(
           body: result.getValue()?.toJson() ?? {},
+        );
+      }
+    } catch (e) {
+      return Response(statusCode: HttpStatus.unauthorized);
+    }
+  }
+
+  Future<Response> deleteMethod() async {
+    try {
+      final requestJson =
+          jsonDecode(await request.body()) as Map<String, dynamic>;
+      final result = await locator.get<DeleteAdminUseCase>().call(
+            ModelWithParentId<int>(requestJson['data'] as int, 0),
+          );
+      if (result.hasError()) {
+        return Response(statusCode: HttpStatus.badRequest);
+      } else {
+        return Response.json(
+          body: requestJson,
         );
       }
     } catch (e) {
@@ -91,7 +112,7 @@ Future<Response> onRequest(RequestContext context) async {
     case HttpMethod.post:
       return postMethod();
     case HttpMethod.delete:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return deleteMethod();
     case HttpMethod.head:
       return Response(statusCode: HttpStatus.methodNotAllowed);
     case HttpMethod.options:

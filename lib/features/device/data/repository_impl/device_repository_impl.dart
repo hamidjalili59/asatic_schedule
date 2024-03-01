@@ -13,8 +13,7 @@ import 'package:isar/isar.dart';
 ///
 /// implement logic of device data here
 ///
-class DeviceRepositoryImpl
-    extends BaseRepository<ModelWithParentId<Device>, DeviceResponse> {
+class DeviceRepositoryImpl extends BaseRepository<Device, DeviceResponse> {
   /// instance of ISAR Database
   late Isar db = locator.get<Isar>();
 
@@ -29,8 +28,9 @@ class DeviceRepositoryImpl
         () async {
           final admin = await db.admins.get(object.parentId);
           await db.devices.put(newDevice).then((value) async {
-            final deviceList = admin?.deviceList?.toList();
-            deviceList?.add(value);
+            final deviceList = List<int>.empty(growable: true)
+              ..addAll(admin?.deviceList?.toList() ?? [])
+              ..add(value);
             admin?.deviceList = deviceList;
           }); // insert & update
           await db.admins.put(
@@ -57,16 +57,31 @@ class DeviceRepositoryImpl
   }
 
   @override
-  FutureOr<ReturnSaveFuncInfo<bool>> deleteById(int id) async {
-    final deleteResult = await db.devices.delete(id);
-
-    if (deleteResult) {
-      final result = ReturnSaveFuncInfo<bool>()..setValue(true);
-      return result;
-    } else {
+  FutureOr<ReturnSaveFuncInfo<bool>> deleteById(
+    ModelWithParentId<int> object,
+  ) async {
+    final admin = await db.admins.get(object.parentId);
+    if (admin == null) {
       final result = ReturnSaveFuncInfo<bool>()..setError();
       return result;
     }
+    await db.writeTxn(() async {
+      await db.devices.delete(object.data).then((value) async {
+        if (value) {
+          final deviceList = List<int>.empty(growable: true)
+            ..addAll(admin.deviceList?.toList() ?? [])
+            ..remove(object.data);
+          admin.deviceList = deviceList;
+          await db.admins.put(admin);
+        } else {
+          final result = ReturnSaveFuncInfo<bool>()..setError();
+          return result;
+        }
+      });
+    });
+
+    final result = ReturnSaveFuncInfo<bool>()..setValue(true);
+    return result;
   }
 
   @override
@@ -105,13 +120,12 @@ class DeviceRepositoryImpl
 
   @override
   FutureOr<ReturnSaveFuncInfo<DeviceResponse>> updateById(
-    ModelWithParentId<Device> object,
+    Device object,
   ) async {
-    final changedDevice =
-        await db.writeTxn(() async => db.devices.put(object.data));
-    if (changedDevice == object.data.id) {
+    final changedDevice = await db.writeTxn(() async => db.devices.put(object));
+    if (changedDevice == object.id) {
       final result = ReturnSaveFuncInfo<DeviceResponse>()
-        ..setValue(await object.data.toDeviceResponse());
+        ..setValue(await object.toDeviceResponse());
       return result;
     } else {
       final result = ReturnSaveFuncInfo<DeviceResponse>()..setError();

@@ -4,6 +4,7 @@ import 'package:asatic/features/admin/domain/models/admin.dart';
 import 'package:asatic/features/admin/domain/models/get_admin_response.dart';
 import 'package:asatic/features/core/extentions_utils.dart';
 import 'package:asatic/features/core/models/base_repository.dart';
+import 'package:asatic/features/core/models/model_with_parent_id.dart';
 import 'package:asatic/features/core/models/returnSaveFuncInfo.dart';
 import 'package:asatic/features/locator.dart';
 import 'package:isar/isar.dart';
@@ -15,14 +16,16 @@ class AdminRepositoryImpl extends BaseRepository<Admin, AdminResponse> {
   /// instance of ISAR Database
   late Isar db = locator.get<Isar>();
   @override
-  FutureOr<ReturnSaveFuncInfo<AdminResponse>> create(Admin object) async {
+  FutureOr<ReturnSaveFuncInfo<AdminResponse>> create(
+    ModelWithParentId<Admin> object,
+  ) async {
     try {
       final newAdmin = Admin(
-        name: object.name ?? 'UNNAMED',
-        address: object.address ?? 'UNTAGGED',
-        password: object.password ?? 'UNKNOWN',
-        phone: object.phone ?? 0,
-        deviceList: object.deviceList,
+        name: object.data.name ?? 'UNNAMED',
+        address: object.data.address ?? 'UNTAGGED',
+        password: object.data.password ?? 'UNKNOWN',
+        phone: object.data.phone ?? 0,
+        deviceList: object.data.deviceList,
       );
 
       await db.writeTxn(
@@ -38,8 +41,10 @@ class AdminRepositoryImpl extends BaseRepository<Admin, AdminResponse> {
   }
 
   @override
-  FutureOr<ReturnSaveFuncInfo<bool>> deleteById(int id) async {
-    final deleteResult = await db.admins.delete(id);
+  FutureOr<ReturnSaveFuncInfo<bool>> deleteById(
+    ModelWithParentId<int> object,
+  ) async {
+    final deleteResult = await db.admins.delete(object.data);
 
     if (deleteResult) {
       final result = ReturnSaveFuncInfo<bool>()..setValue(true);
@@ -83,7 +88,9 @@ class AdminRepositoryImpl extends BaseRepository<Admin, AdminResponse> {
   }
 
   @override
-  FutureOr<ReturnSaveFuncInfo<AdminResponse>> updateById(Admin object) async {
+  FutureOr<ReturnSaveFuncInfo<AdminResponse>> updateById(
+    Admin object,
+  ) async {
     final changedAdmin = await db.writeTxn(() => db.admins.put(object));
     if (changedAdmin == object.phone) {
       final result = ReturnSaveFuncInfo<AdminResponse>()

@@ -5,6 +5,7 @@ import 'package:asatic/features/core/models/model_with_parent_id.dart';
 import 'package:asatic/features/device/domain/models/device.dart';
 import 'package:asatic/features/device/domain/use_case/change_device_info_use_case.dart';
 import 'package:asatic/features/device/domain/use_case/create_device_use_case.dart';
+import 'package:asatic/features/device/domain/use_case/delete_device_use_case.dart';
 import 'package:asatic/features/device/domain/use_case/get_all_devices_use_case.dart';
 import 'package:asatic/features/device/domain/use_case/get_device_by_id_use_case.dart';
 import 'package:asatic/features/locator.dart';
@@ -65,15 +66,34 @@ Future<Response> onRequest(RequestContext context) async {
     }
   }
 
+  Future<Response> deleteMethod() async {
+    try {
+      final requestJson =
+          jsonDecode(await request.body()) as Map<String, dynamic>;
+      final result = await locator.get<DeleteDeviceUseCase>().call(
+            ModelWithParentId<int>(
+              requestJson['data'] as int,
+              requestJson['parentId'] as int,
+            ),
+          );
+      if (result.hasError()) {
+        return Response(statusCode: HttpStatus.badRequest);
+      } else {
+        return Response.json(
+          body: requestJson,
+        );
+      }
+    } catch (e) {
+      return Response(statusCode: HttpStatus.unauthorized);
+    }
+  }
+
   Future<Response> putMethod() async {
     try {
       final requestJson =
           jsonDecode(await request.body()) as Map<String, dynamic>;
       final result = await locator.get<UpdateDeviceInfoUseCase>().call(
-            ModelWithParentId<Device>(
-              Device.fromJson(requestJson['data'] as Map<String, dynamic>),
-              requestJson['parentId'] as int,
-            ),
+            Device.fromJson(requestJson),
           );
       if (result.hasError()) {
         return Response(statusCode: HttpStatus.badRequest);
@@ -95,7 +115,7 @@ Future<Response> onRequest(RequestContext context) async {
     case HttpMethod.post:
       return postMethod();
     case HttpMethod.delete:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return deleteMethod();
     case HttpMethod.head:
       return Response(statusCode: HttpStatus.methodNotAllowed);
     case HttpMethod.options:

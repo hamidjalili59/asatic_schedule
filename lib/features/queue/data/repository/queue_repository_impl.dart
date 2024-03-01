@@ -11,8 +11,7 @@ import 'package:isar/isar.dart';
 ///
 /// implement logic of device data here
 ///
-class QueueRepositoryImpl
-    extends BaseRepository<ModelWithParentId<QueueModel>, QueueModel> {
+class QueueRepositoryImpl extends BaseRepository<QueueModel, QueueModel> {
   /// instance of ISAR Database
   late Isar db = locator.get<Isar>();
   @override
@@ -25,8 +24,9 @@ class QueueRepositoryImpl
       await db.writeTxn(() async {
         final device = await db.devices.get(object.parentId);
         await db.queueModels.put(newQueueModel).then((value) async {
-          final queueList = device?.queueList?.toList();
-          queueList?.add(value);
+          final queueList = List<int>.empty(growable: true)
+            ..addAll(device?.queueList?.toList() ?? [])
+            ..add(value);
           device?.queueList = queueList;
         });
         await db.devices.put(
@@ -48,16 +48,31 @@ class QueueRepositoryImpl
   }
 
   @override
-  FutureOr<ReturnSaveFuncInfo<bool>> deleteById(int id) async {
-    final deleteResult = await db.queueModels.delete(id);
-
-    if (deleteResult) {
-      final result = ReturnSaveFuncInfo<bool>()..setValue(true);
-      return result;
-    } else {
+  FutureOr<ReturnSaveFuncInfo<bool>> deleteById(
+    ModelWithParentId<int> object,
+  ) async {
+    final device = await db.devices.get(object.parentId);
+    if (device == null) {
       final result = ReturnSaveFuncInfo<bool>()..setError();
       return result;
     }
+    await db.writeTxn(() async {
+      await db.queueModels.delete(object.data).then((value) async {
+        if (value) {
+          final queueList = List<int>.empty(growable: true)
+            ..addAll(device.queueList?.toList() ?? [])
+            ..remove(object.data);
+          device.queueList = queueList;
+          await db.devices.put(device);
+        } else {
+          final result = ReturnSaveFuncInfo<bool>()..setError();
+          return result;
+        }
+      });
+    });
+
+    final result = ReturnSaveFuncInfo<bool>()..setValue(true);
+    return result;
   }
 
   @override
@@ -89,12 +104,12 @@ class QueueRepositoryImpl
 
   @override
   FutureOr<ReturnSaveFuncInfo<QueueModel>> updateById(
-    ModelWithParentId<QueueModel> object,
+    QueueModel object,
   ) async {
     final changedQueueModel =
-        await db.writeTxn(() => db.queueModels.put(object.data));
-    if (changedQueueModel == object.data.id) {
-      final result = ReturnSaveFuncInfo<QueueModel>()..setValue(object.data);
+        await db.writeTxn(() => db.queueModels.put(object));
+    if (changedQueueModel == object.id) {
+      final result = ReturnSaveFuncInfo<QueueModel>()..setValue(object);
       return result;
     } else {
       final result = ReturnSaveFuncInfo<QueueModel>()..setError();
